@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة تاريخ الرياضيات</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root{
+    --navy:#0d2438;
+    --navy-2:#123a56;
+    --teal:#1c7a7a;
+    --teal-light:#2fa8a8;
+    --gold:#c9a24b;
+    --gold-light:#e6cd8a;
+    --cream:#f4efe3;
+    --red:#b3453f;
+    --green:#3f8a5f;
+    --card:#ffffff;
+    --text:#1b2733;
+    --muted:#5f7386;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 10%, rgba(201,162,75,0.10), transparent 40%),
+      radial-gradient(circle at 85% 85%, rgba(28,122,122,0.12), transparent 45%),
+      var(--navy);
+    font-family:'Cairo', sans-serif;
+    color:var(--text);
+    min-height:100vh;
+    padding:28px 16px 60px;
+  }
+
+  .wrap{max-width:920px;margin:0 auto;}
+
+  header{
+    text-align:center;
+    margin-bottom:22px;
+    color:var(--cream);
+  }
+  header .eyebrow{
+    font-size:13px;
+    letter-spacing:2px;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    margin-bottom:6px;
+    font-weight:700;
+  }
+  header h1{
+    font-family:'Amiri', serif;
+    font-size:32px;
+    margin:0 0 6px;
+    font-weight:700;
+  }
+  header p{
+    margin:0;
+    color:#b9c6d1;
+    font-size:14px;
+  }
+
+  .stats-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin:18px 0 20px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(201,162,75,0.35);
+    border-radius:12px;
+    padding:8px 16px;
+    color:var(--cream);
+    font-size:13px;
+    text-align:center;
+    min-width:82px;
+  }
+  .stat b{display:block;font-size:20px;color:var(--gold-light);font-family:'Amiri',serif;}
+
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .chip{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#d8e2ea;
+    padding:8px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    transition:all .2s;
+    user-select:none;
+  }
+  .chip:hover{border-color:var(--gold);}
+  .chip.active{
+    background:var(--teal);
+    border-color:var(--teal-light);
+    color:#fff;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    padding:26px 26px 22px;
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+    position:relative;
+    overflow:hidden;
+    min-height:280px;
+    display:flex;
+    flex-direction:column;
+  }
+  .card::before{
+    content:'';
+    position:absolute;
+    top:0;right:0;left:0;
+    height:6px;
+    background:linear-gradient(90deg, var(--gold), var(--teal));
+  }
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .badge{
+    font-size:12px;
+    font-weight:700;
+    padding:5px 12px;
+    border-radius:999px;
+    background:var(--navy-2);
+    color:var(--gold-light);
+  }
+  .qcount{
+    font-size:13px;
+    color:var(--muted);
+    font-weight:600;
+  }
+
+  .qtext{
+    font-family:'Amiri', serif;
+    font-size:22px;
+    line-height:1.7;
+    color:var(--navy);
+    margin:6px 0 20px;
+    flex-grow:0;
+  }
+
+  .tf-btns{display:flex;gap:12px;margin-bottom:8px;}
+  .tf-btn{
+    flex:1;
+    padding:14px;
+    border-radius:12px;
+    border:2px solid #dfe6ea;
+    background:#fafcfc;
+    font-family:'Cairo',sans-serif;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .15s;
+    color:var(--text);
+  }
+  .tf-btn:hover{border-color:var(--teal-light);}
+  .tf-btn.true-btn.picked{border-color:var(--green);background:#e9f6ee;}
+  .tf-btn.false-btn.picked{border-color:var(--red);background:#fbeceb;}
+
+  .mcq-choices{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .choice-btn{
+    text-align:right;
+    padding:13px 16px;
+    border-radius:12px;
+    border:2px solid #dfe6ea;
+    background:#fafcfc;
+    font-family:'Cairo',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .15s;
+    color:var(--text);
+  }
+  .choice-btn:hover{border-color:var(--teal-light);}
+  .choice-btn.correct{border-color:var(--green);background:#e9f6ee;}
+  .choice-btn.wrong{border-color:var(--red);background:#fbeceb;}
+
+  .reveal{
+    margin-top:auto;
+    padding-top:16px;
+    border-top:1px dashed #e1e6ea;
+    display:none;
+  }
+  .reveal.show{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .verdict{
+    font-weight:800;
+    font-size:15px;
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .verdict.ok{color:var(--green);}
+  .verdict.bad{color:var(--red);}
+  .correction{
+    background:#fff7e8;
+    border-inline-start:4px solid var(--gold);
+    padding:10px 14px;
+    border-radius:8px;
+    font-size:14px;
+    line-height:1.7;
+    color:#4a3d1f;
+    margin-top:6px;
+  }
+  .note{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:8px;
+    font-style:italic;
+  }
+
+  .nav-row{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+  .nav-btn{
+    flex:1;
+    padding:13px;
+    border-radius:12px;
+    border:none;
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    transition:transform .1s, opacity .2s;
+  }
+  .nav-btn:active{transform:scale(0.97);}
+  .nav-btn.primary{background:var(--teal);color:#fff;}
+  .nav-btn.primary:hover{background:var(--teal-light);}
+  .nav-btn.ghost{background:var(--navy-2);color:var(--gold-light);}
+  .nav-btn.ghost:hover{opacity:0.85;}
+  .nav-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+  .footer-hint{
+    text-align:center;
+    color:#8ea1b0;
+    font-size:12px;
+    margin-top:16px;
+  }
+
+  .done-screen{
+    text-align:center;
+    color:var(--navy);
+    padding:20px;
+  }
+  .done-screen h2{font-family:'Amiri',serif;font-size:26px;margin-bottom:6px;}
+  .done-screen .score-big{font-size:48px;font-weight:800;color:var(--teal);font-family:'Amiri',serif;}
+
+  @media (max-width:520px){
+    .qtext{font-size:19px;}
+    header h1{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">تاريخ الرياضيات · CM-SSHS124</div>
+    <h1>مراجعة تدريبات الاختبار النصفي</h1>
+    <p>بطاقات تفاعلية لكل الأبواب — مع تصحيح الإجابات الخاطئة في أسئلة صح/خطأ</p>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat"><b id="statTotal">0</b>سؤال</div>
+    <div class="stat"><b id="statSeen">0</b>تمت مراجعته</div>
+    <div class="stat"><b id="statCorrect">0</b>إجابات صحيحة</div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="card" id="cardArea"></div>
+
+  <div class="nav-row">
+    <button class="nav-btn ghost" id="prevBtn">◀ السابق</button>
+    <button class="nav-btn ghost" id="shuffleBtn">🔀 عشوائي</button>
+    <button class="nav-btn primary" id="nextBtn">التالي ▶</button>
+  </div>
+
+  <p class="footer-hint">اختاري إجابتك أولاً ثم ستظهر الإجابة الصحيحة تلقائياً — للأسئلة الخاطئة ستجدين التصحيح باللون الذهبي</p>
+  <p class="footer-hint" style="margin-top:4px;opacity:0.8;">© Jana Zakai — جميع الحقوق محفوظة</p>
+</div>
+
+<script>
+const DATA = [
+// ===== الباب الأول: تمهيد =====
+{ch:"تمهيد", type:"tf", q:"من أهداف دراسة تاريخ الرياضيات تكوين الحس التاريخي لدى الدارس.", ans:true},
+{ch:"تمهيد", type:"tf", q:"من الموضوعات التطبيقية التي ظهرت في القرن العشرين نظرية الألعاب.", ans:true},
+{ch:"تمهيد", type:"tf", q:"من علماء القرن التاسع عشر هو ليونارد أويلر.", ans:false, correction:"أويلر (Euler) من علماء القرن الثامن عشر (1707–1783)، وليس التاسع عشر."},
+{ch:"تمهيد", type:"tf", q:"من العلوم الصورية العلوم الطبيعية.", ans:false, correction:"العلوم الطبيعية من العلوم التجريبية/الواقعية، أما العلوم الصورية فهي كالرياضيات والمنطق."},
+{ch:"تمهيد", type:"tf", q:"أول جامعة بالعالم هي جامعة الإسكندرية.", ans:true},
+{ch:"تمهيد", type:"tf", q:"تنقسم المعارف إلى ثلاثة أقسام.", ans:true},
+{ch:"تمهيد", type:"tf", q:"كل علم معرفة ولكن ليس كل معرفة تكون علماً.", ans:true},
+{ch:"تمهيد", type:"tf", q:"من المسلمات: الكل أكبر من الجزء.", ans:true},
+{ch:"تمهيد", type:"tf", q:"من إضافات العلماء العرب والمسلمين ترجمة الكتب اليونانية القديمة.", ans:true},
+{ch:"تمهيد", type:"tf", q:"تنقسم الرياضيات إلى فرعين رئيسين هما الرياضيات البحتة والرياضيات التطبيقية.", ans:true},
+{ch:"تمهيد", type:"tf", q:"من صفات الرياضيات الصفة التسلسلية.", ans:true},
+{ch:"تمهيد", type:"mcq", q:"ينسب الاستدلال الرياضي إلى العالم .......", choices:["أرسطو","رينيه ديكارت","إقليدس","ابن الهيثم"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"الاستدلال القياسي ينسب إلى العالم .......", choices:["أرسطو","رينيه ديكارت","إقليدس","ابن الهيثم"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"بدأت الرياضيات كعلم له أصوله عند .......", choices:["الإغريق","المصريين القدماء","البابليون","الصينيون"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"أول كتاب رياضي وصل إلينا هو كتاب .......", choices:["الجبر والمقابلة","الأصول","الكبير","المجسطي"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"الشيء الذي ليس له أجزاء ولا أبعاد هو .......", choices:["الزاوية","السطح","النقطة","الفراغ"], ans:2},
+{ch:"تمهيد", type:"mcq", q:"يقال عن زاويتين أنهما متكاملتان إذا كان مجموعهما .......", choices:["90°","180°","360°","45°"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"من علماء القرن السابع عشر .......", choices:["إقليدس","الخوارزمي","إسحاق نيوتن","أبقراط"], ans:2},
+{ch:"تمهيد", type:"mcq", q:"من موضوعات الرياضيات التطبيقية .......", choices:["الميكانيكا","الجبر","التحليل","الهندسة"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"مجموعة من المفاهيم أو العبارات نقبل بصحتها بدون برهان هي .......", choices:["المسلمة","الفرض","القضية","البرهان"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"من الحضارات القديمة .......", choices:["الحضارة الأوربية","الحضارة الإسلامية","الحضارة المصرية","الحضارة الغربية"], ans:2},
+{ch:"تمهيد", type:"mcq", q:"أول عالمة رياضيات بتاريخ العالم هي .......", choices:["هيباتيا","ديوفانتس","أويلر","جاوس"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"تقوم العلوم الرياضية على المنهج .......", choices:["الاستقرائي","الاستنباطي","التجريبي","التقييمي"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"تقوم العلوم الحياتية على المنهج .......", choices:["الاستقرائي","الاستنباطي","التجريبي","التقييمي"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"من تعريفات الرياضيات قديماً .......", choices:["علم المقدار المتصل أو المنفصل","علم الأشياء","علم الأرض","علم الزوايا"], ans:0},
+{ch:"تمهيد", type:"mcq", q:"شيء له طول وعرض فقط هو .......", choices:["النقطة","السطح","الزاوية","الخط المستقيم"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"يتميز الاستدلال الرياضي عن الاستدلال القياسي بعنصر .......", choices:["المعرفة","الملاحظة","الابتكار","التجربة"], ans:2},
+{ch:"تمهيد", type:"mcq", q:"مؤسس قسم رياضيات في جامعة الإسكندرية هو .......", choices:["الخوارزمي","إقليدس","أرخميدس","جاليليو"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"استخراج نتائج من مجموعة معروفة من الحقائق من التخصيص إلى التعميم يسمى .......", choices:["الفرض","الاستقراء","الاستدلال","القضية"], ans:1},
+{ch:"تمهيد", type:"mcq", q:"من مواضيع الرياضيات البحتة .......", choices:["الجبر","التحليل","الهندسة","جميع ما ذكر"], ans:3},
+
+// ===== الباب الثاني: أنظمة العد (مصحّح من الملف المحلول) =====
+{ch:"أنظمة العد", type:"tf", q:"يستخدم الحلزون عند القدماء المصريين للدلالة على العدد 1000000.", ans:false, correction:"رمز الحلزون (الحبل الملفوف) يمثل العدد 100 عند قدماء المصريين، أما المليون فيرمز له بشكل 'الرجل المندهش' (رافعاً ذراعيه)."},
+{ch:"أنظمة العد", type:"tf", q:"من أهمية علم الحساب معرفة مواقيت الصلاة.", ans:true},
+{ch:"أنظمة العد", type:"tf", q:"من أنظمة العد المعروفة العد الصفري.", ans:false, correction:"العد الصفري ليس نظام عدّ قائماً بذاته ضمن الأنظمة التاريخية المعروفة (كالعشري والستيني)، بل الصفر مفهوم رياضي ظهر ضمن بعض الأنظمة."},
+{ch:"أنظمة العد", type:"tf", q:"الأعداد الفردية هي الأعداد التي تعطي مربعات عند جمعها بالتتابع.", ans:true, correction:"مثال: 1+3=4، 1+3+5=9 (أعداد مربعة كاملة)."},
+{ch:"أنظمة العد", type:"tf", q:"العدد √2 يعتبر من الأعداد الصماء.", ans:true},
+{ch:"أنظمة العد", type:"tf", q:"استخدم العرب نظاماً عددياً مرتبطاً بالحروف اليونانية.", ans:false, correction:"استخدم العرب نظام 'حساب الجُمَّل' المرتبط بالحروف العربية الأبجدية (أبجد هوّز)، وليس اليونانية."},
+{ch:"أنظمة العد", type:"tf", q:"الرقم عند القدماء المصريين يدل على العدد ½.", ans:true},
+{ch:"أنظمة العد", type:"tf", q:"يستخدم قدماء المصريين الرمز (∩∩|||) للدلالة على العدد 32.", ans:false, correction:"الرمز يتكون من عظمتي كعب (كل منهما = 10) وثلاث خطوط (كل منها = 1)، فيكون المجموع 20+3 = 23 وليس 32."},
+{ch:"أنظمة العد", type:"mcq", q:"اخترع النظام الستيني للعد هم .......", choices:["الإغريق","المصريون القدماء","البابليون","الصينيون"], ans:2},
+{ch:"أنظمة العد", type:"mcq", q:"العدد الذي مجموع قواسمه أقل منه هو عدد .......", choices:["ناقص","زائد","متعادل","زوجي"], ans:0},
+{ch:"أنظمة العد", type:"mcq", q:"العدد الذي مجموع قواسمه أعلى منه هو عدد .......", choices:["ناقص","زائد","متعادل","زوجي"], ans:1},
+{ch:"أنظمة العد", type:"mcq", q:"العدد الذي مجموع قواسمه يساويه هو عدد .......", choices:["ناقص","زائد","متعادل","زوجي"], ans:2},
+{ch:"أنظمة العد", type:"mcq", q:"يستخدم رمز زهرة اللوتس عند المصريين القدماء للدلالة على العدد .......", choices:["10","100","1000","10000"], ans:2},
+{ch:"أنظمة العد", type:"mcq", q:"الأعداد ....... هي التي تعطي مستطيلات عند جمعها بالتتابع.", choices:["مثلثة","مربعة","متحابة","زوجية"], ans:3},
+{ch:"أنظمة العد", type:"mcq", q:"تعتبر عملية ....... أكثر العمليات الحسابية صعوبة.", choices:["الجمع","الطرح","الضرب","القسمة"], ans:3},
+{ch:"أنظمة العد", type:"mcq", q:"....... علم العدد الذي يعالج في جانبه النظري الأرقام والأعداد.", choices:["علم الحساب","علم الهندسة","علم الجبر","علم المثلثات"], ans:0},
+{ch:"أنظمة العد", type:"mcq", q:"يستخدم البابليون الرمز (المسماري المائل) للدلالة على العدد .......", choices:["10","100","1000","10000"], ans:0},
+{ch:"أنظمة العد", type:"mcq", q:"كتابة الأعداد بالكتابة المسمارية كانت عند .......", choices:["الإغريق","المصريين القدماء","البابليون","الرومانيون"], ans:2},
+{ch:"أنظمة العد", type:"mcq", q:"أول ما استخدمه الإنسان في الرياضيات هو .......", choices:["دراسة العدد","دراسة الهندسة","دراسة الجبر","دراسة التحليل"], ans:0},
+{ch:"أنظمة العد", type:"mcq", q:"قام ....... باختراع النظام العشري.", choices:["الإغريق","المصريون القدماء","البابليون","الرومانيون"], ans:1},
+
+// ===== باب الجبر =====
+{ch:"الجبر", type:"tf", q:"الخوارزمي هو أول من استخدم مصطلح الجبر.", ans:true},
+{ch:"الجبر", type:"tf", q:"الجبر قبل الخوارزمي كان يعتمد على الرموز الحديثة.", ans:false, correction:"كان الجبر قبل الخوارزمي وحتى بعده لفترة 'جبراً كلامياً/لفظياً' يعتمد على الكلمات، والرموز الحديثة (مثل x, y) ظهرت لاحقاً مع فييت وديكارت."},
+{ch:"الجبر", type:"tf", q:"قسّم نيسلمان تاريخ الجبر إلى ثلاث مراحل.", ans:true, correction:"المراحل هي: الكلامية، ثم المختزلة، ثم الرمزية."},
+{ch:"الجبر", type:"tf", q:"المرحلة الكلامية تعتمد على استخدام الكلمات فقط.", ans:true},
+{ch:"الجبر", type:"tf", q:"المرحلة المختزلة تستخدم كلمات مختصرة وإشارات.", ans:true},
+{ch:"الجبر", type:"tf", q:"المرحلة الأولى في تاريخ الجبر كانت مرحلة الصور المختزلة.", ans:false, correction:"المرحلة الأولى في تاريخ الجبر كانت المرحلة الكلامية (اللفظية)، ثم تلتها المرحلة المختزلة، ثم الرمزية."},
+{ch:"الجبر", type:"tf", q:"الإغريق اهتموا بالجبر أكثر من الهندسة.", ans:false, correction:"الإغريق اهتموا بالهندسة أكثر بكثير من الجبر، وكان تفكيرهم الرياضي هندسي الطابع في الغالب."},
+{ch:"الجبر", type:"tf", q:"ديوفانتس نقل الجبر من المرحلة الكلامية إلى المختزلة.", ans:true},
+{ch:"الجبر", type:"tf", q:"الكاشي هو أول من فكّر في مفكوك ذات الحدين.", ans:true},
+{ch:"الجبر", type:"tf", q:"الكرخي أورد قواعد لضرب الإشارات.", ans:true},
+{ch:"الجبر", type:"mcq", q:"من هو مؤلف كتاب الجبر والمقابلة؟", choices:["ابن سينا","الخوارزمي","الكاشي","جاوس"], ans:1},
+{ch:"الجبر", type:"mcq", q:"أي حضارة استخدمت الجبر بصورة لفظية مطوّلة؟", choices:["الرومانية","الحديثة","البابلية","الأوروبية"], ans:2},
+{ch:"الجبر", type:"mcq", q:"بردية أحمس تعود إلى حضارة .......", choices:["الإغريق","المصريين القدماء","البابليين","الرومان"], ans:1},
+{ch:"الجبر", type:"mcq", q:"من العلماء المرتبطين بالجبر الديوفانتي؟", choices:["جاوس","ديوفانتس","هيلبرت","الكرخي"], ans:1},
+{ch:"الجبر", type:"mcq", q:"من أهم فروع الجبر الحديث .......", choices:["المجموعات","الهندسة","الإحداثيات","الجبر الخطي"], ans:3},
+{ch:"الجبر", type:"mcq", q:"الجبر الخطي يهتم بدراسة .......", choices:["المعادلات فقط","المصفوفات","الأعداد الصحيحة","الكسور"], ans:1},
+{ch:"الجبر", type:"mcq", q:"أول من أطلق اسم المصفوفة وعبّر عنها بمستطيل منتظم هو .......", choices:["الخوارزمي","ديوفانتس","كارل جاوس","هيلبرت"], ans:2},
+{ch:"الجبر", type:"mcq", q:"الكلمة 'جبر' عند الخوارزمي تعني .......", choices:["الضرب","النقل (جبر الكسر/الترميم)","القسمة","الاختزال"], ans:1},
+{ch:"الجبر", type:"mcq", q:"الكلمة 'مقابلة' تعني .......", choices:["الجمع","النقل","الاختزال (حذف المتماثلات)","الضرب"], ans:2},
+{ch:"الجبر", type:"mcq", q:"الكميات التي يتحدد كل منها بمقدار واتجاه تُعرف بـ .......", choices:["المجموعات","المعادلات","المتجهات","المتسلسلات"], ans:2},
+
+// ===== باب الهندسة =====
+{ch:"الهندسة", type:"tf", q:"الدافع الأساسي إلى ابتكار علم الهندسة هو قياس مساحات الأراضي.", ans:true},
+{ch:"الهندسة", type:"tf", q:"كانت تُعرف الهندسة قديماً بعلم القياس.", ans:true},
+{ch:"الهندسة", type:"tf", q:"لم يعرف البابليون مساحة الأشكال الهندسية.", ans:false, correction:"عرف البابليون حساب مساحات بعض الأشكال الهندسية البسيطة (كالمستطيل والمثلث) لأغراض عملية كقياس الأراضي."},
+{ch:"الهندسة", type:"tf", q:"مجموع زوايا المثلث يساوي زاويتين قائمتين.", ans:true, correction:"أي 180° = 90°×2."},
+{ch:"الهندسة", type:"tf", q:"يسمى أبقراط الكيوسي أبو الهندسة.", ans:true},
+{ch:"الهندسة", type:"tf", q:"ترجم العرب التراث الإغريقي إلى العربية.", ans:true},
+{ch:"الهندسة", type:"tf", q:"ظهرت الهندسة الإقليدية في جامعة الإسكندرية.", ans:true},
+{ch:"الهندسة", type:"tf", q:"تعتبر الهندسة التحليلية أم الهندسة.", ans:false, correction:"الهندسة الإقليدية (التركيبية) هي الأصل التاريخي الذي تفرعت عنه بقية أنواع الهندسة، وليست التحليلية."},
+{ch:"الهندسة", type:"tf", q:"كانت المدرسة الإقليدية هي أول من استخدم كلمة Mathematics للدلالة على الرياضيات.", ans:false, correction:"يُنسب استخدام مصطلح 'Mathematics' في أصله (Mathema بمعنى المعرفة/التعلّم) إلى المدرسة الفيثاغورية، وليست المدرسة الإقليدية."},
+{ch:"الهندسة", type:"mcq", q:"ذكر العالم ....... أن قدماء المصريين اخترعوا علم الهندسة.", choices:["هيرودوت","أرسطو","نيوتن","الخوارزمي"], ans:0},
+{ch:"الهندسة", type:"mcq", q:"أول من صاغ الهندسة كعلم له أصوله عند الإغريق .......", choices:["طاليس","فيثاغورث","إقليدس","أبقراط"], ans:0},
+{ch:"الهندسة", type:"mcq", q:"اشتهر بإثبات نظرية الوتر في المثلث القائم الزاوية .......", choices:["طاليس","فيثاغورث","إقليدس","أبقراط"], ans:1},
+{ch:"الهندسة", type:"mcq", q:"كتاب إقليدس الشهير في الهندسة هو .......", choices:["الأصول","المجسطي","الحساب","الشفاء"], ans:0},
+{ch:"الهندسة", type:"mcq", q:"المسلمة الخامسة لإقليدس هي .......", choices:["مسلمة الضرب","مسلمة الجمع","مسلمة الطرح","مسلمة التوازي"], ans:3},
+{ch:"الهندسة", type:"mcq", q:"أول من اكتشف القصور في هندسة إقليدس هو .......", choices:["طاليس","فيثاغورث","أرخميدس","أبقراط"], ans:2},
+];
+
+let filtered = [...DATA];
+let idx = 0;
+let seen = new Set();
+let correctCount = 0;
+let picked = null;
+
+const chapters = ["الكل", ...Array.from(new Set(DATA.map(d=>d.ch)))];
+const filtersEl = document.getElementById('filters');
+chapters.forEach(ch=>{
+  const chip = document.createElement('div');
+  chip.className = 'chip' + (ch==='الكل' ? ' active' : '');
+  chip.textContent = ch + (ch!=='الكل' ? ` (${DATA.filter(d=>d.ch===ch).length})` : ` (${DATA.length})`);
+  chip.onclick = ()=>{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    filtered = ch==='الكل' ? [...DATA] : DATA.filter(d=>d.ch===ch);
+    idx = 0; picked = null;
+    render();
+  };
+  filtersEl.appendChild(chip);
+});
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+document.getElementById('shuffleBtn').onclick = ()=>{
+  shuffle(filtered);
+  idx = 0; picked = null;
+  render();
+};
+document.getElementById('prevBtn').onclick = ()=>{
+  if(idx>0){ idx--; picked=null; render(); }
+};
+document.getElementById('nextBtn').onclick = ()=>{
+  if(idx < filtered.length-1){ idx++; picked=null; render(); }
+  else { idx = filtered.length; render(); }
+};
+
+function updateStats(){
+  document.getElementById('statTotal').textContent = filtered.length;
+  document.getElementById('statSeen').textContent = seen.size;
+  document.getElementById('statCorrect').textContent = correctCount;
+}
+
+function keyFor(q){ return q.ch + '|' + q.q; }
+
+function render(){
+  const cardArea = document.getElementById('cardArea');
+  updateStats();
+  document.getElementById('prevBtn').disabled = idx===0;
+
+  if(idx >= filtered.length){
+    cardArea.innerHTML = `
+      <div class="done-screen">
+        <div class="score-big">${correctCount} / ${filtered.length}</div>
+        <h2>انتهت المراجعة لهذا القسم 🎉</h2>
+        <p style="color:var(--muted);font-size:14px;">اضغطي "عشوائي" لإعادة المحاولة بترتيب مختلف</p>
+      </div>`;
+    document.getElementById('nextBtn').disabled = true;
+    return;
+  }
+  document.getElementById('nextBtn').disabled = false;
+
+  const q = filtered[idx];
+  seen.add(keyFor(q));
+
+  let html = `
+    <div class="card-top">
+      <span class="badge">${q.ch}</span>
+      <span class="qcount">${idx+1} / ${filtered.length}</span>
+    </div>
+    <div class="qtext">${q.q}</div>
+  `;
+
+  if(q.type === 'tf'){
+    html += `
+      <div class="tf-btns">
+        <button class="tf-btn true-btn" data-val="true">صح</button>
+        <button class="tf-btn false-btn" data-val="false">خطأ</button>
+      </div>
+      <div class="reveal" id="reveal"></div>
+    `;
+  } else {
+    html += `<div class="mcq-choices">`;
+    q.choices.forEach((c,i)=>{
+      html += `<button class="choice-btn" data-idx="${i}">${c}</button>`;
+    });
+    html += `</div><div class="reveal" id="reveal"></div>`;
+  }
+
+  cardArea.innerHTML = html;
+  updateStats();
+
+  if(q.type === 'tf'){
+    document.querySelectorAll('.tf-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        if(picked !== null) return;
+        const val = btn.dataset.val === 'true';
+        picked = val;
+        document.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+        btn.classList.add('picked');
+        const isCorrect = val === q.ans;
+        if(isCorrect) correctCount++;
+        updateStats();
+        showReveal(q, isCorrect);
+      };
+    });
+  } else {
+    document.querySelectorAll('.choice-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        if(picked !== null) return;
+        const chosen = parseInt(btn.dataset.idx);
+        picked = chosen;
+        document.querySelectorAll('.choice-btn').forEach((b,i)=>{
+          b.disabled = true;
+          if(i === q.ans) b.classList.add('correct');
+          else if(i === chosen) b.classList.add('wrong');
+        });
+        const isCorrect = chosen === q.ans;
+        if(isCorrect) correctCount++;
+        updateStats();
+        showReveal(q, isCorrect);
+      };
+    });
+  }
+}
+
+function showReveal(q, isCorrect){
+  const reveal = document.getElementById('reveal');
+  let html = '';
+  if(q.type === 'tf'){
+    html += `<div class="verdict ${isCorrect?'ok':'bad'}">${isCorrect ? '✔ إجابتك صحيحة' : '✘ إجابتك غير صحيحة'} — الإجابة الفعلية: ${q.ans ? 'صح' : 'خطأ'}</div>`;
+    if(q.correction){
+      html += `<div class="correction">📌 <b>التصحيح:</b> ${q.correction}</div>`;
+    }
+  } else {
+    html += `<div class="verdict ${isCorrect?'ok':'bad'}">${isCorrect ? '✔ إجابة صحيحة' : '✘ الإجابة الصحيحة هي: ' + q.choices[q.ans]}</div>`;
+  }
+  if(q.note){
+    html += `<div class="note">⚠ ${q.note}</div>`;
+  }
+  reveal.innerHTML = html;
+  reveal.classList.add('show');
+}
+
+render();
+</script>
+</body>
+</html>
